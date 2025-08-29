@@ -1,50 +1,93 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { useState } from "react";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [movies, setMovies] = useState([]);
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    console.log("Keyword:", query);
+    if (!query) return;
+
+    try {
+      const res = await fetch(`https://www.omdbapi.com/?apikey=2876ddb3&s=${query}`);
+      const data = await res.json();
+
+      if (data.Response === "True") {
+        setMovies(data.Search);
+      } else {
+        setMovies([]);
+      }
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      setMovies([]);
+    }
+
+    // ✅ kosongkan input setelah pencarian
+    setQuery("");
   };
 
   return (
     <>
-      {/* Navbar biru */}
-     <nav className="bg-blue-600 text-white py-3">
-  <div className="container mx-auto flex items-center justify-between px-6">
-    <h1 className="text-3xl font-bold">WPU Movie</h1>
-    <span className="text-3xl font-bold">Enjoy Your Movie</span>
-  </div>
-</nav>
+      {/* Navbar Bootstrap */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div className="container">
+          <a className="navbar-brand fw-bold fs-2" href="#">
+            WPU Movie
+          </a>
+          <span className="navbar-brand fw-bold fs-3">Enjoy Your Movie</span>
+        </div>
+      </nav>
 
+      {/* Main Content */}
+      <div className="container my-5">
+        <h2 className="text-center mb-4">🎬 Search For Movie</h2>
 
-
-      {/* Main content */}
-      <main className="min-h-screen bg-white flex flex-col items-center justify-start pt-24">
-        {/* Judul di tengah atas */}
-        <h2 className="text-5xl text-black font-bold mb-8 text-center">
-          🎬 Search For Movie
-        </h2>
-
-        {/* Form search di bawah judul */}
-        <form onSubmit={handleSearch} className="flex w-full max-w-4xl mx-auto">
+        {/* Search Form */}
+        <form onSubmit={handleSearch} className="d-flex justify-content-center mb-4">
           <input
             type="text"
+            className="form-control me-2"
+            style={{ maxWidth: "400px" }}
             placeholder="Search Movie..."
-            className="flex-1 px-4 py-2 rounded-l text-black bg-gray-200 focus:outline-none"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded-r font-medium hover:bg-blue-700 transition"
-          >
+          <button type="submit" className="btn btn-primary">
             Search
           </button>
         </form>
-      </main>
+
+        {/* Movie Cards */}
+        <div className="row">
+          {movies.length > 0 ? (
+            movies.map((m) => (
+              <div className="col-md-4 mb-3" key={m.imdbID}>
+                <div className="card h-100">
+                  <img
+                    src={m.Poster !== "N/A" ? m.Poster : "/next.svg"}
+                    className="card-img-top"
+                    alt={m.Title}
+                    style={{ height: "400px", objectFit: "cover" }}
+                  />
+                  <div className="card-body">
+                    <h5 className="card-title">{m.Title}</h5>
+                    <h6 className="card-subtitle text-muted">{m.Year}</h6>
+                    <a href="#" className="btn btn-primary mt-2">
+                      See Detail
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-muted">
+              Belum ada hasil pencarian
+            </p>
+          )}
+        </div>
+      </div>
     </>
   );
 }
