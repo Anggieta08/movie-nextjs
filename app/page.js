@@ -1,17 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import MovieCard from "./components/MovieCard";
+import MovieDetailModal from "./components/MovieDetailModal";
 
 export default function Home() {
-  useEffect(() => {
-    import("bootstrap/dist/js/bootstrap.bundle.min.js");
-  }, []);
-
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
+  // Cari film
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!query) return;
@@ -26,9 +25,11 @@ export default function Home() {
       console.error("Error fetching movies:", error);
       setMovies([]);
     }
+
     setQuery("");
   };
 
+  // Ambil detail film
   const handleDetail = async (imdbID) => {
     try {
       const res = await fetch(
@@ -50,9 +51,7 @@ export default function Home() {
           <a className="navbar-brand fw-bold fs-2" href="#">
             WPU Movie
           </a>
-          <span className="navbar-brand fw-bold fs-4">
-            Enjoy Your Movie
-          </span>
+          <span className="navbar-brand fw-bold fs-4">Enjoy Your Movie</span>
         </div>
       </nav>
 
@@ -61,7 +60,9 @@ export default function Home() {
         {/* Search */}
         <div className="d-flex flex-column align-items-center mb-5">
           <h2 className="d-flex justify-content-center align-items-center mb-3 text-dark fw-bold">
-            <span role="img" aria-label="clapper" className="me-2">🎬</span>
+            <span role="img" aria-label="clapper" className="me-2">
+              🎬
+            </span>
             Search For Movie
           </h2>
           <form
@@ -86,85 +87,16 @@ export default function Home() {
         <div className="row">
           {movies.length > 0 ? (
             movies.map((m) => (
-              <div className="col-md-4 mb-4" key={m.imdbID}>
-                <div className="card h-100 shadow-sm">
-                  <img
-                    src={m.Poster !== "N/A" ? m.Poster : "/next.svg"}
-                    className="card-img-top"
-                    alt={m.Title}
-                    style={{ height: "500px", objectFit: "cover" }}
-                  />
-                  <div className="card-body d-flex flex-column">
-                    <h5 className="card-title">{m.Title}</h5>
-                    <h6 className="card-subtitle text-muted mb-3">{m.Year}</h6>
-                    <button
-                      className="btn btn-primary mt-auto"
-                      data-bs-toggle="modal"
-                      data-bs-target="#movieDetail"
-                      onClick={() => handleDetail(m.imdbID)}
-                    >
-                      See Detail
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <MovieCard key={m.imdbID} movie={m} onSeeDetail={handleDetail} />
             ))
           ) : (
-            <p className="text-center text-muted">Belum ada hasil pencarian</p>
+            <hr className="my-5 border-secondary" style={{ height: "50px" }} />
           )}
         </div>
       </div>
 
       {/* Modal Detail */}
-      <div
-        className="modal fade"
-        id="movieDetail"
-        tabIndex="-1"
-        aria-labelledby="movieDetailLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            {selectedMovie ? (
-              <>
-                <div className="modal-header">
-                  <h5 className="modal-title" id="movieDetailLabel">
-                    {selectedMovie.Title} ({selectedMovie.Year})
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body row">
-                  <div className="col-md-4">
-                    <img
-                      src={selectedMovie.Poster !== "N/A" ? selectedMovie.Poster : "/next.svg"}
-                      alt={selectedMovie.Title}
-                      className="img-fluid rounded"
-                    />
-                  </div>
-                  <div className="col-md-8">
-                    <ul className="list-group">
-                      <li className="list-group-item"><strong>Genre:</strong> {selectedMovie.Genre}</li>
-                      <li className="list-group-item"><strong>Director:</strong> {selectedMovie.Director}</li>
-                      <li className="list-group-item"><strong>Actors:</strong> {selectedMovie.Actors}</li>
-                      <li className="list-group-item"><strong>Released:</strong> {selectedMovie.Released}</li>
-                      <li className="list-group-item"><strong>Plot:</strong> {selectedMovie.Plot}</li>
-                    </ul>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="modal-body">
-                <p className="text-muted">Loading detail...</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <MovieDetailModal movie={selectedMovie} />
     </div>
   );
 }
