@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-export default function MovieDetailModal({ movie }) {
+export default function MovieDetailModal({ movie, onAddToCart }) {
   return (
     <div
       className="modal fade"
@@ -25,6 +25,7 @@ export default function MovieDetailModal({ movie }) {
                   aria-label="Close"
                 ></button>
               </div>
+
               <div className="modal-body row">
                 <div className="col-md-4">
                   <img
@@ -34,7 +35,7 @@ export default function MovieDetailModal({ movie }) {
                   />
                 </div>
                 <div className="col-md-8">
-                  <ul className="list-group">
+                  <ul className="list-group mb-3">
                     <li className="list-group-item"><strong>Genre:</strong> {movie.Genre}</li>
                     <li className="list-group-item"><strong>Director:</strong> {movie.Director}</li>
                     <li className="list-group-item"><strong>Actors:</strong> {movie.Actors}</li>
@@ -42,6 +43,23 @@ export default function MovieDetailModal({ movie }) {
                     <li className="list-group-item"><strong>Plot:</strong> {movie.Plot}</li>
                   </ul>
                 </div>
+              </div>
+
+              {/* Footer: Close + Add to Cart */}
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button 
+                  className="btn btn-success"
+                  onClick={() => onAddToCart(movie)}
+                >
+                  🛒 Add to Cart
+                </button>
               </div>
             </>
           ) : (

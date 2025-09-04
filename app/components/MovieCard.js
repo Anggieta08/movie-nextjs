@@ -18,9 +18,7 @@ export default function MovieCard({ movie, onSeeDetail }) {
             className="btn btn-primary mt-auto"
             data-bs-toggle="modal"
             data-bs-target="#movieDetail"
-            onClick={() => onSeeDetail(movie.imdbID)}
-          >
-            See Detail
+            onClick={() => onSeeDetail(movie.imdbID)}>See Detail
           </button>
         </div>
       </div>
