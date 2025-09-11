@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import MovieCard from "./components/MovieCard";
 import MovieDetailModal from "./components/MovieDetailModal";
+import CartModal from "./components/CartModal"; 
+import "./globals.css"; 
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -9,9 +11,9 @@ export default function Home() {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [error, setError] = useState(""); 
   const [cart, setCart] = useState([]);
-  const [animate, setAnimate] = useState(false); // untuk animasi badge
+  const [animate, setAnimate] = useState(false);
 
-  // Trigger animasi setiap kali cart berubah
+  // animasi badge cart
   useEffect(() => {
     if (cart.length > 0) {
       setAnimate(true);
@@ -20,15 +22,28 @@ export default function Home() {
     }
   }, [cart]);
 
-  // Untuk mencari film
+  // tambah film ke keranjang
+  const addToCart = (movie) => {
+    if (!cart.find((item) => item.imdbID === movie.imdbID)) {
+      setCart([...cart, movie]);
+    }
+  };
+
+  // cari film
   const handleSearch = async (e) => {
     e.preventDefault();
-    if (!query) return;
+    if (!query.trim()) {
+      setError("Please enter a movie name.");
+      return;
+    }
 
     try {
       const res = await fetch(
-        `https://www.omdbapi.com/?apikey=fb4ebf49&s=${encodeURIComponent(query)}`
+        `https://www.omdbapi.com/?apikey=144c588b&s=${encodeURIComponent(query)}`
       );
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
       const data = await res.json();
 
       if (data.Response === "True") {
@@ -41,20 +56,27 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching movies:", error);
       setMovies([]);
-      setError("Error fetching movies."); // kalau fetch gagal
+      setError("Error fetching movies. Please try again later.");
     }
 
     setQuery("");
   };
 
-  // Untuk mengambil detail film
+  // detail film
   const handleDetail = async (imdbID) => {
     try {
       const res = await fetch(
-        `https://www.omdbapi.com/?apikey=fb4ebf49&i=${imdbID}` 
+        `https://www.omdbapi.com/?apikey=144c588b&i=${imdbID}` 
       );
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
       const data = await res.json();
-      if (data.Response === "True") setSelectedMovie(data);
+      if (data.Response === "True") {
+        setSelectedMovie(data);
+      } else {
+        setSelectedMovie(null);
+      }
     } catch (error) {
       console.error("Error fetching movie detail:", error);
       setSelectedMovie(null);
@@ -63,26 +85,50 @@ export default function Home() {
 
   return (
     <div className="bg-white min-vh-100">
-      {/* Bagian Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div className="container">
-          <a className="navbar-brand fw-bold fs-2" href="#">
-            WPU Movie
-          </a>
-          <span className="navbar-brand fw-bold fs-4">Enjoy Your Movie</span>
-          
-          {/* Keranjang */}
-          <span className="position-relative ms-3 fs-3" role="button">
-            🛒
-            <span className={`position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${animate ? "shake" : ""}`}>
-              {cart.length}
-            </span>
-          </span>
-        </div>
-      </nav>
+      {/* Navbar */}
+      {/* Navbar */}
+<nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div 
+    className="container d-flex justify-content-between align-items-center"
+    style={{ maxWidth: "15 00px" }} // ✅ biar ga terlalu melebar
+  >
+    {/* Logo kiri */}
+    <a className="navbar-brand fw-bold fs-2" href="#">
+      WPU Movie
+    </a>
 
+    {/* Tombol keranjang kanan */}
+    <button
+      type="button"
+      className="btn btn-light position-relative rounded-circle shadow-sm"
+      data-bs-toggle="modal"
+      data-bs-target="#cartModal"
+      style={{
+        width: "50px",
+        height: "50px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <span className="fs-4 text-primary">🛒</span>
+      <span
+        className={`position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${
+          animate ? "shake" : ""
+        }`}
+        style={{
+          fontSize: "0.8rem",
+          padding: "0.35em 0.55em",
+        }}
+      >
+        {cart.length}
+      </span>
+    </button>
+  </div>
+</nav>
+
+      {/* Bagian Search */}
       <div className="container my-5">
-        {/* Bagian Search */}
         <div className="d-flex flex-column align-items-center mb-5">
           <h2 className="d-flex justify-content-center align-items-center mb-3 text-dark fw-bold">
             <span role="img" aria-label="clapper" className="me-2">🎬</span>
@@ -92,23 +138,26 @@ export default function Home() {
           <form
             onSubmit={handleSearch}
             className="d-flex"
-            style={{ maxWidth: "500px", width: "100%" }}>
+            style={{ maxWidth: "500px", width: "100%" }}
+          >
             <input
               type="text"
               className="form-control me-2"
               placeholder="Search Movie..."
               value={query}
-              onChange={(e) => setQuery(e.target.value)}/>
+              onChange={(e) => setQuery(e.target.value)}
+            />
             <button type="submit" className="btn btn-primary">Search</button>
           </form>
         </div>
 
-        {/* Error Message */}
+        {/* Error */}
         {error && (
           <div
             className="alert alert-danger text-center fs-4 fw-bold mx-auto"
             role="alert"
-            style={{ maxWidth: "400px" }}>
+            style={{ maxWidth: "400px" }}
+          >
             {error}
           </div>
         )}
@@ -116,18 +165,25 @@ export default function Home() {
         {/* Movie Cards */}
         <div className="row">
           {movies.length > 0 &&
-  movies.map((m, i) => (
-    <MovieCard key={`${m.imdbID}-${i}`} movie={m} onSeeDetail={handleDetail} />
-  ))}
-
+            movies.map((m, i) => (
+              <MovieCard 
+                key={`${m.imdbID}-${i}`} 
+                movie={m} 
+                onSeeDetail={handleDetail} 
+              />
+            ))
+          }
         </div>
       </div>
 
-      <MovieDetailModal 
-  movie={selectedMovie} 
-  onAddToCart={(movie) => setCart([...cart, movie])} 
-/>
+      {/* Modal Keranjang */}
+      <CartModal cart={cart} setCart={setCart} />
 
+      {/* Modal Detail */}
+      <MovieDetailModal 
+        movie={selectedMovie} 
+        onAddToCart={addToCart}
+      />
     </div>
   );
 }

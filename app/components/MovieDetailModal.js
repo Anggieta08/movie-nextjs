@@ -55,8 +55,10 @@ export default function MovieDetailModal({ movie, onAddToCart }) {
                   Close
                 </button>
                 <button 
+                  type="button"
                   className="btn btn-success"
                   onClick={() => onAddToCart(movie)}
+                  data-bs-dismiss="modal" // ✅ otomatis tutup modal setelah klik
                 >
                   🛒 Add to Cart
                 </button>
