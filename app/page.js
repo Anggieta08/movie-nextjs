@@ -22,6 +22,13 @@ export default function Home() {
     }
   }, [cart]);
 
+  // simpan cart ke localStorage setiap kali cart berubah
+useEffect(() => {
+  console.log("Isi cart sekarang:", cart); // 🔎 cek isi cart di console
+  localStorage.setItem("cart", JSON.stringify(cart));
+}, [cart]);
+
+
   // tambah film ke keranjang
   const addToCart = (movie) => {
     if (!cart.find((item) => item.imdbID === movie.imdbID)) {
