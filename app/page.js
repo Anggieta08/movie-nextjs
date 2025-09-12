@@ -22,11 +22,22 @@ export default function Home() {
     }
   }, [cart]);
 
-  // simpan cart ke localStorage setiap kali cart berubah
+  // 1️⃣ Load cart sekali saat halaman pertama kali dimuat
 useEffect(() => {
-  console.log("Isi cart sekarang:", cart); // 🔎 cek isi cart di console
+  const savedCart = localStorage.getItem("cart");
+  if (savedCart) {
+    setCart(JSON.parse(savedCart));
+    console.log("Cart loaded from localStorage:", JSON.parse(savedCart));
+  }
+}, []);
+
+// 2️⃣ Simpan cart ke localStorage setiap kali cart berubah
+useEffect(() => {
   localStorage.setItem("cart", JSON.stringify(cart));
+  console.log("Cart saved to localStorage:", cart);
 }, [cart]);
+
+
 
 
   // tambah film ke keranjang
