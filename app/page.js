@@ -23,22 +23,19 @@ export default function Home() {
   }, [cart]);
 
   // 1️⃣ Load cart sekali saat halaman pertama kali dimuat
-useEffect(() => {
-  const savedCart = localStorage.getItem("cart");
-  if (savedCart) {
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
     setCart(JSON.parse(savedCart));
     console.log("Cart loaded from localStorage:", JSON.parse(savedCart));
   }
 }, []);
 
-// 2️⃣ Simpan cart ke localStorage setiap kali cart berubah
-useEffect(() => {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  console.log("Cart saved to localStorage:", cart);
+  // 2️⃣ Simpan cart ke localStorage setiap kali cart berubah
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    console.log("Cart saved to localStorage:", cart);
 }, [cart]);
-
-
-
 
   // tambah film ke keranjang
   const addToCart = (movie) => {
@@ -105,43 +102,46 @@ useEffect(() => {
     <div className="bg-white min-vh-100">
       {/* Navbar */}
       {/* Navbar */}
-<nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+<nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
   <div 
     className="container d-flex justify-content-between align-items-center"
-    style={{ maxWidth: "15 00px" }} // ✅ biar ga terlalu melebar
+    style={{ maxWidth: "1200px" }}
   >
     {/* Logo kiri */}
     <a className="navbar-brand fw-bold fs-2" href="#">
-      WPU Movie
+      WPU MOVIE
     </a>
 
     {/* Tombol keranjang kanan */}
-    <button
-      type="button"
-      className="btn btn-light position-relative rounded-circle shadow-sm"
-      data-bs-toggle="modal"
-      data-bs-target="#cartModal"
-      style={{
-        width: "50px",
-        height: "50px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <span className="fs-4 text-primary">🛒</span>
-      <span
-        className={`position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ${
-          animate ? "shake" : ""
-        }`}
-        style={{
-          fontSize: "0.8rem",
-          padding: "0.35em 0.55em",
-        }}
-      >
-        {cart.length}
-      </span>
-    </button>
+   {/* Tombol keranjang kanan */}
+<button
+  type="button"
+  className="btn btn-light position-relative rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+  data-bs-toggle="modal"
+  data-bs-target="#cartModal"
+  style={{
+    width: "68px",
+    height: "68px",
+  }}
+>
+  <span className="fs-3 text-primary">🛒</span>
+ {cart.length > 0 && (
+  <span
+    className={`position-absolute badge rounded-pill bg-danger ${animate ? "shake" : ""}`}
+    style={{
+      top: "-8px",              // 🔥 geser sedikit ke bawah biar gak nempel
+      right: "-8px",            // 🔥 geser sedikit ke kiri biar lebih proporsional
+      fontSize: "1rem",       // 🔥 angka lebih besar & jelas
+      padding: "0.35em 0.60em", // 🔥 ruang lebih luas biar bulat
+      border: "3px solid #ffffffff", // 🔥 garis putih biar tegas
+      boxShadow: "0 2px 6px rgba(0,0,0,0.25)", // 🔥 ada depth
+    }}
+  >
+    {cart.length}
+  </span>
+  )}
+</button>
+
   </div>
 </nav>
 
