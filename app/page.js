@@ -26,16 +26,16 @@ export default function Home() {
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
-    setCart(JSON.parse(savedCart));
-    console.log("Cart loaded from localStorage:", JSON.parse(savedCart));
-  }
-}, []);
+      setCart(JSON.parse(savedCart));
+      console.log("Cart loaded from localStorage:", JSON.parse(savedCart));
+    }
+  }, []);
 
   // 2️⃣ Simpan cart ke localStorage setiap kali cart berubah
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
     console.log("Cart saved to localStorage:", cart);
-}, [cart]);
+  }, [cart]);
 
   // tambah film ke keranjang
   const addToCart = (movie) => {
@@ -101,72 +101,73 @@ export default function Home() {
   return (
     <div className="bg-white min-vh-100">
       {/* Navbar */}
-      {/* Navbar */}
-<nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
-  <div 
-    className="container d-flex justify-content-between align-items-center"
-    style={{ maxWidth: "1200px" }}
-  >
-    {/* Logo kiri */}
-    <a className="navbar-brand fw-bold fs-2" href="#">
-      WPU MOVIE
-    </a>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
+        <div 
+          className="container d-flex justify-content-between align-items-center"
+          style={{ maxWidth: "1200px" }}>
 
-    {/* Tombol keranjang kanan */}
-   {/* Tombol keranjang kanan */}
-<button
-  type="button"
-  className="btn btn-light position-relative rounded-circle shadow-sm d-flex align-items-center justify-content-center"
-  data-bs-toggle="modal"
-  data-bs-target="#cartModal"
-  style={{
-    width: "68px",
-    height: "68px",
-  }}
->
-  <span className="fs-3 text-primary">🛒</span>
- {cart.length > 0 && (
-  <span
-    className={`position-absolute badge rounded-pill bg-danger ${animate ? "shake" : ""}`}
-    style={{
-      top: "-8px",              // 🔥 geser sedikit ke bawah biar gak nempel
-      right: "-8px",            // 🔥 geser sedikit ke kiri biar lebih proporsional
-      fontSize: "1rem",       // 🔥 angka lebih besar & jelas
-      padding: "0.35em 0.60em", // 🔥 ruang lebih luas biar bulat
-      border: "3px solid #ffffffff", // 🔥 garis putih biar tegas
-      boxShadow: "0 2px 6px rgba(0,0,0,0.25)", // 🔥 ada depth
-    }}
-  >
-    {cart.length}
-  </span>
-  )}
-</button>
-
-  </div>
-</nav>
+          {/* Logo kiri */}
+          <a className="navbar-brand fw-bold fs-2" href="#">MOVIE NEXT.JS</a>
+        
+          {/* Tombol keranjang kanan */}
+          <button
+            type="button"
+            className="btn btn-light position-relative rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+            data-bs-toggle="modal"
+            data-bs-target="#cartModal"
+            style={{
+              width: "68px",
+              height: "68px",
+            }}
+          >
+            <span className="fs-2 text-primary">🛒</span>
+            {cart.length > 0 && (
+              <span
+                className={`position-absolute badge rounded-pill bg-danger ${animate ? "shake" : ""}`}
+                style={{
+                  top: "-5px",               // ✅ geser turun dikit supaya gak nutup emoticon
+                  right: "-15px",             // ✅ lebih rapih di pojok kanan atas
+                  fontSize: "1rem",
+                  padding: "0.35em 0.60em",
+                  border: "5px solid #fff", 
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                }}
+              >
+                {cart.length}
+              </span>
+            )}
+          </button>
+        </div>
+      </nav>
 
       {/* Bagian Search */}
       <div className="container my-5">
-        <div className="d-flex flex-column align-items-center mb-5">
-          <h2 className="d-flex justify-content-center align-items-center mb-3 text-dark fw-bold">
+        <div className="text-center mb-4">
+          {/* ✅ H2 sudah rapih tengah */}
+          <h2 className="text-dark fw-bold fs-2 d-inline-flex align-items-center mb-3">
             <span role="img" aria-label="clapper" className="me-2">🎬</span>
             Search For Movie
           </h2>
-          
+
           <form
-            onSubmit={handleSearch}
-            className="d-flex"
-            style={{ maxWidth: "500px", width: "100%" }}
-          >
+  onSubmit={handleSearch}
+  className="d-flex mx-auto gap-3"
+  style={{ maxWidth: "900px", width: "100%" }}
+>
             <input
-              type="text"
-              className="form-control me-2"
-              placeholder="Search Movie..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <button type="submit" className="btn btn-primary">Search</button>
-          </form>
+    type="text"
+    className="form-control"
+    placeholder="Search Movie..."
+    value={query}
+    onChange={(e) => setQuery(e.target.value)}
+    style={{
+      backgroundColor: "#ffffffff",      // 🎨 biru muda pastel
+      border: "5px solid #0072e5ff",     // 🎨 border biru lembut
+      boxShadow: "0 20px 10px rgba(0, 0, 0, 0.1)", // ✨ shadow halus
+    }}
+  />
+             <button type="submit" className="btn btn-primary px-4">Search</button>
+</form>
         </div>
 
         {/* Error */}
