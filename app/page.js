@@ -17,34 +17,30 @@ export default function Home() {
   useEffect(() => {
     if (cart.length > 0) {
       setAnimate(true);
-      const timeout = setTimeout(() => setAnimate(false), 300); 
+      const timeout = setTimeout(() => setAnimate(false), 600); 
       return () => clearTimeout(timeout);
     }
   }, [cart]);
 
-  // 1️⃣ Load cart sekali saat halaman pertama kali dimuat
+  // Load cart dari localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
-      console.log("Cart loaded from localStorage:", JSON.parse(savedCart));
     }
   }, []);
 
-  // 2️⃣ Simpan cart ke localStorage setiap kali cart berubah
+  // Simpan cart ke localStorage setiap berubah
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
-    console.log("Cart saved to localStorage:", cart);
   }, [cart]);
 
-  // tambah film ke keranjang
   const addToCart = (movie) => {
     if (!cart.find((item) => item.imdbID === movie.imdbID)) {
       setCart([...cart, movie]);
     }
   };
 
-  // cari film
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!query.trim()) {
@@ -52,7 +48,7 @@ export default function Home() {
       return;
     }
 
-    try {
+    try { 
       const res = await fetch(
         `https://www.omdbapi.com/?apikey=144c588b&s=${encodeURIComponent(query)}`
       );
@@ -77,7 +73,6 @@ export default function Home() {
     setQuery("");
   };
 
-  // detail film
   const handleDetail = async (imdbID) => {
     try {
       const res = await fetch(
@@ -99,38 +94,61 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white min-vh-100">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #1B1B2F, #2C2C54, #432C52)", 
+        color: "#fff"
+      }}
+    >
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
+      <nav 
+        className="navbar navbar-expand-lg shadow-sm py-3"
+        style={{
+          background: "linear-gradient(90deg, #FF4F81, #D81B60, #AD1457)",
+          border: "2px solid #AD1457",
+          borderRadius: "5px",           
+        }}
+      >
         <div 
           className="container d-flex justify-content-between align-items-center"
           style={{ maxWidth: "1200px" }}>
 
           {/* Logo kiri */}
-          <a className="navbar-brand fw-bold fs-2" href="#">MOVIE NEXT.JS</a>
+          <a 
+            className="navbar-brand fw-bold fs-2" 
+            href="#"
+            style={{ color: "#fff" }}
+          >
+            MOVIE NEXT.JS
+          </a>
         
           {/* Tombol keranjang kanan */}
           <button
             type="button"
-            className="btn btn-light position-relative rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+            className="btn position-relative rounded-circle shadow-sm d-flex align-items-center justify-content-center"
             data-bs-toggle="modal"
             data-bs-target="#cartModal"
             style={{
-              width: "68px",
-              height: "68px",
+              width: "60px",
+              height: "60px",
+              background: "linear-gradient(135deg, #ff9ab7ff, #ffffffff)", 
+              border: "2px solid #fff",
+              boxShadow: "0 4px 10px rgba(216,27,96,0.6)",
             }}
           >
-            <span className="fs-2 text-primary">🛒</span>
+            <span className="fs-3 text-light">🛒</span>
             {cart.length > 0 && (
               <span
-                className={`position-absolute badge rounded-pill bg-danger ${animate ? "shake" : ""}`}
+                className={`position-absolute badge rounded-pill ${animate ? "shake" : ""}`}
                 style={{
-                  top: "-5px",               // ✅ geser turun dikit supaya gak nutup emoticon
-                  right: "-15px",             // ✅ lebih rapih di pojok kanan atas
-                  fontSize: "1rem",
-                  padding: "0.35em 0.60em",
-                  border: "5px solid #fff", 
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+                  top: "-5px",               
+                  right: "-12px",            
+                  fontSize: "0.9rem",
+                  padding: "0.3em 0.55em",
+                  backgroundColor: "#FF80AB", 
+                  border: "2px solid #fff", 
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.4)",
                 }}
               >
                 {cart.length}
@@ -143,37 +161,73 @@ export default function Home() {
       {/* Bagian Search */}
       <div className="container my-5">
         <div className="text-center mb-4">
-          {/* ✅ H2 sudah rapih tengah */}
-          <h2 className="text-dark fw-bold fs-2 d-inline-flex align-items-center mb-3">
-            <span role="img" aria-label="clapper" className="me-2">🎬</span>
-            Search For Movie
+          <h2 className="fw-bold fs-2 d-inline-flex align-items-center mb-3" style={{ color: "#fff" }}>
+            <span role="img" aria-label="clapper" className="me-2">🎬</span>Search For Movie
           </h2>
 
           <form
-  onSubmit={handleSearch}
-  className="d-flex mx-auto gap-3"
-  style={{ maxWidth: "900px", width: "100%" }}
->
+            onSubmit={handleSearch}
+            className="d-flex mx-auto gap-3"
+            /* Hanya ubah style: lebar form sedikit diperbesar */
+            style={{ maxWidth: "1000px", width: "95%" }}
+          >
+
             <input
-    type="text"
-    className="form-control"
-    placeholder="Search Movie..."
-    value={query}
-    onChange={(e) => setQuery(e.target.value)}
-    style={{
-      backgroundColor: "#ffffffff",      // 🎨 biru muda pastel
-      border: "5px solid #0072e5ff",     // 🎨 border biru lembut
-      boxShadow: "0 20px 10px rgba(0, 0, 0, 0.1)", // ✨ shadow halus
-    }}
-  />
-             <button type="submit" className="btn btn-primary px-4">Search</button>
-</form>
+              type="text"
+              className="form-control"  /* tetap mempertahankan className asli */
+              placeholder="Search Movie... "
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              /* Hanya ubah style: padding, fontSize, warna teks, borderRadius */
+              style={{
+                backgroundColor: "#ffffff",
+                color: "#000000",
+                border: "3px solid #FF4F81",
+                boxShadow: "0 4px 10px rgba(255, 79, 129, 0.8)", 
+                borderRadius: "12px",
+                padding: "12px 16px",
+                fontSize: "1.05rem",
+              }}
+            />
+ 
+            <button 
+              type="submit" 
+              className="btn px-4 fw-bold" /* tetap className asli */
+              /* Hanya ubah style: padding, fontSize, borderRadius */
+              style={{
+                backgroundColor: "#FF4F81",
+                color: "white",
+                border: "none",
+                borderRadius: "12px",
+                boxShadow: "0 4px 10px rgba(238, 185, 200, 1)",
+                padding: "12px 22px",
+                fontSize: "1.05rem",
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#E91E63"}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#FF4F81"}
+            >
+              Search
+            </button>
+          </form>
         </div>
+
+        {/* Garis pemisah */}
+        {(movies.length > 0 || error) && (
+          /* Hanya ubah style: buat garis lebih tebal & rounded */
+          <hr
+            style={{
+              border: "5px solid #ffffffff", 
+              borderRadius: "5px",
+              width: "100%",
+              margin: "50px 0"
+            }}
+          />
+        )}
 
         {/* Error */}
         {error && (
           <div
-            className="alert alert-danger text-center fs-4 fw-bold mx-auto"
+            className="alert alert-danger text-center fs-5 fw-bold mx-auto"
             role="alert"
             style={{ maxWidth: "400px" }}
           >
@@ -185,10 +239,10 @@ export default function Home() {
         <div className="row">
           {movies.length > 0 &&
             movies.map((m, i) => (
-              <MovieCard 
-                key={`${m.imdbID}-${i}`} 
-                movie={m} 
-                onSeeDetail={handleDetail} 
+              <MovieCard
+                key={`${m.imdbID}-${i}`}
+                movie={m}
+                onSeeDetail={handleDetail}
               />
             ))
           }
@@ -203,6 +257,22 @@ export default function Home() {
         movie={selectedMovie} 
         onAddToCart={addToCart}
       />
+
+      {/* Animasi Shake Badge */}
+      <style>
+      {`
+        @keyframes shake {
+          0%, 100% { transform: translate(0, 0); }
+          20% { transform: translateX(-2px); }
+          40% { transform: translateX(2px); }
+          60% { transform: translateX(-2px); }
+          80% { transform: translateX(2px); }
+        }
+        .shake {
+          animation: shake 0.1s;
+        }
+      `}
+      </style>
     </div>
   );
 }
