@@ -12,6 +12,7 @@ export default function Home() {
   const [error, setError] = useState(""); 
   const [cart, setCart] = useState([]);
   const [animate, setAnimate] = useState(false);
+  
 
   // animasi badge cart
   useEffect(() => {
@@ -50,19 +51,20 @@ export default function Home() {
 
     try { 
       const res = await fetch(
-        `https://www.omdbapi.com/?apikey=144c588b&s=${encodeURIComponent(query)}`
+        `https://www.omdbapi.com/?apikey=65eb3943&s=${encodeURIComponent(query)}`
       );
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
       const data = await res.json();
+      console.log("API Response:", data); // debug response
 
       if (data.Response === "True") {
         setMovies(data.Search);
         setError(""); 
       } else {
         setMovies([]);
-        setError("Movie not found!");
+        setError(data.Error || "Movie not found!"); // tampilkan error asli
       }
     } catch (error) {
       console.error("Error fetching movies:", error);
@@ -70,26 +72,31 @@ export default function Home() {
       setError("Error fetching movies. Please try again later.");
     }
 
-    setQuery("");
+    // ❌ jangan dikosongkan, biar user tetap lihat inputnya
+    // setQuery("");
   };
 
   const handleDetail = async (imdbID) => {
     try {
       const res = await fetch(
-        `https://www.omdbapi.com/?apikey=144c588b&i=${imdbID}` 
+        `https://www.omdbapi.com/?apikey=65eb3943&i=${imdbID}` 
       );
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
       const data = await res.json();
+      console.log("Detail Response:", data); // debug response
+
       if (data.Response === "True") {
         setSelectedMovie(data);
       } else {
         setSelectedMovie(null);
+        setError(data.Error || "Movie detail not found!");
       }
     } catch (error) {
       console.error("Error fetching movie detail:", error);
       setSelectedMovie(null);
+      setError("Error fetching movie detail. Please try again later.");
     }
   };
 
@@ -168,17 +175,15 @@ export default function Home() {
           <form
             onSubmit={handleSearch}
             className="d-flex mx-auto gap-3"
-            /* Hanya ubah style: lebar form sedikit diperbesar */
             style={{ maxWidth: "1000px", width: "95%" }}
           >
 
             <input
               type="text"
-              className="form-control"  /* tetap mempertahankan className asli */
+              className="form-control"
               placeholder="Search Movie... "
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              /* Hanya ubah style: padding, fontSize, warna teks, borderRadius */
               style={{
                 backgroundColor: "#ffffff",
                 color: "#000000",
@@ -192,8 +197,7 @@ export default function Home() {
  
             <button 
               type="submit" 
-              className="btn px-4 fw-bold" /* tetap className asli */
-              /* Hanya ubah style: padding, fontSize, borderRadius */
+              className="btn px-4 fw-bold"
               style={{
                 backgroundColor: "#FF4F81",
                 color: "white",
@@ -213,7 +217,6 @@ export default function Home() {
 
         {/* Garis pemisah */}
         {(movies.length > 0 || error) && (
-          /* Hanya ubah style: buat garis lebih tebal & rounded */
           <hr
             style={{
               border: "5px solid #ffffffff", 
