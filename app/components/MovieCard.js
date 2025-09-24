@@ -7,30 +7,46 @@ export default function MovieCard({ movie, onSeeDetail }) {
       <div
         className="card h-100 shadow-sm"
         style={{
-          backgroundColor: "#2C2C54",
-          color: "#fff",
-          border: "2px solid #D81B60",
+          backgroundColor: "#fff",
+          color: "#000",
+          border: "6px solid #D81B60",
           borderRadius: "12px",
           overflow: "hidden",
-        }}
-      >
+        }}>
+        
         {/* Poster */}
+        <div
+          style={{
+          width: "100%",
+          height: "auto",
+          backgroundColor: "#000", // biar rapi kalau ada poster kecil
+        }}>
+
         <img
           src={movie.Poster !== "N/A" ? movie.Poster : "/next.svg"}
           alt={movie.Title}
-          className="card-img-top"
+            className="card-img-top"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain", // 🔥 poster tampil full utuh
+            }}/>
+        </div>
+
+        {/* Garis pemisah */}
+        <div
           style={{
-            height: "380px",
-            objectFit: "cover",
-          }}
-        />
+          height: "6px",
+          backgroundColor: "#D81B60", // warna solid, bisa diganti sesuai kebutuhan
+          margin: "0",
+          }}>
+        </div>
 
         {/* Body */}
-        <div className="card-body d-flex flex-column">
-          <h5
+        <div className="card-body d-flex flex-column text-center">
+          <h5 
             className="card-title fw-bold mb-2"
-            style={{ color: "#FF80AB", minHeight: "48px" }}
-          >
+            style={{ color: "#D81B60" }}>
             {movie.Title}
           </h5>
           <p className="card-text text-muted">{movie.Year}</p>
@@ -38,24 +54,21 @@ export default function MovieCard({ movie, onSeeDetail }) {
           <button
             className="btn mt-auto fw-bold"
             style={{
-              backgroundColor: "#FF4F81",
+              backgroundColor: "#D81B60",
               color: "#fff",
               border: "none",
               borderRadius: "8px",
-              boxShadow: "0 4px 10px rgba(216,27,96,0.5)",
+              boxShadow: "0 4px 10px rgba(255, 255, 255, 0.5)",
             }}
-            data-bs-toggle="modal"
-            data-bs-target="#movieDetail"
-            onClick={() => onSeeDetail(movie.imdbID)}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = "#E91E63")
-            }
-            onMouseOut={(e) =>
+              data-bs-toggle="modal"
+              data-bs-target="#movieDetail"
+              onClick={() => onSeeDetail(movie.imdbID)}
+              onMouseOver={(e) =>
               (e.currentTarget.style.backgroundColor = "#FF4F81")
             }
-          >
-            See Detail
-          </button>
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#E91E63")
+            }>See Detail</button>
         </div>
       </div>
     </div>

@@ -139,9 +139,9 @@ export default function Home() {
             style={{
               width: "60px",
               height: "60px",
-              background: "linear-gradient(135deg, #ff9ab7ff, #ffffffff)", 
+              background: "linear-gradient(135deg, #ffffffff, #ffffffff)", 
               border: "2px solid #fff",
-              boxShadow: "0 4px 10px rgba(216,27,96,0.6)",
+              boxShadow: "0 4px 10px rgba(255, 255, 255, 1)",
             }}
           >
             <span className="fs-3 text-light">🛒</span>
@@ -153,7 +153,7 @@ export default function Home() {
                   right: "-12px",            
                   fontSize: "0.9rem",
                   padding: "0.3em 0.55em",
-                  backgroundColor: "#FF80AB", 
+                  backgroundColor: "#E91E63", 
                   border: "2px solid #fff", 
                   boxShadow: "0 2px 5px rgba(0,0,0,0.4)",
                 }}
@@ -187,8 +187,8 @@ export default function Home() {
               style={{
                 backgroundColor: "#ffffff",
                 color: "#000000",
-                border: "3px solid #FF4F81",
-                boxShadow: "0 4px 10px rgba(255, 79, 129, 0.8)", 
+                border: "3px solid #E91E63",
+                boxShadow: "0 4px 10px rgba(246, 137, 168, 0.8)", 
                 borderRadius: "12px",
                 padding: "12px 16px",
                 fontSize: "1.05rem",
@@ -199,7 +199,7 @@ export default function Home() {
               type="submit" 
               className="btn px-4 fw-bold"
               style={{
-                backgroundColor: "#FF4F81",
+                backgroundColor: "#E91E63",
                 color: "white",
                 border: "none",
                 borderRadius: "12px",
@@ -207,8 +207,8 @@ export default function Home() {
                 padding: "12px 22px",
                 fontSize: "1.05rem",
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#E91E63"}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#FF4F81"}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#FF4F81"}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#E91E63"}
             >
               Search
             </button>
