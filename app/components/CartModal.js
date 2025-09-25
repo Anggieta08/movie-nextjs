@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-export default function CartModal({ cart, setCart }) {
+export default function CartModal({ cart, setCart, onSeeDetail }) {
   return (
     <div className="modal fade" id="cartModal" tabIndex="-1" aria-hidden="true">
       <div
@@ -11,25 +11,32 @@ export default function CartModal({ cart, setCart }) {
         <div
           className="modal-content"
           style={{
-            border: "8px solid #D81B60", // ✅ border pink
-            borderRadius: "10px",
+            border: "8px solid #D81B60",
+            borderRadius: "12px",
+            boxShadow: "0 0 25px rgba(216, 27, 96, 0.5)", // ✨ Glow pink
           }}
         >
-          <div className="modal-header">
+          <div
+            className="modal-header"
+            style={{
+              borderBottom: "4px solid transparent",
+              borderImage: "linear-gradient(to right, #D81B60, #8e24aa) 1", // ✨ Garis gradient
+            }}
+          >
             <h5 className="modal-title fw-bold">Keranjang</h5>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              style={{ filter: "invert(50%)" }} // ✅ ubah warna close jadi abu
+              style={{ filter: "invert(50%)" }}
             ></button>
           </div>
 
-          {/* ✅ Grid 4 kolom; poster utuh (tidak terpotong) */}
+          {/* ✅ Grid 4 kolom; poster utuh */}
           <div className="modal-body">
             {cart.length === 0 ? (
-              <p className="text-center text-muted">Keranjang kosong</p>
+              <p className="text-center text-muted">Keranjang kosong 😢</p>
             ) : (
               <div className="row row-cols-2 row-cols-md-4 g-3">
                 {cart.map((movie) => (
@@ -37,8 +44,19 @@ export default function CartModal({ cart, setCart }) {
                     <div
                       className="card h-100 shadow-sm d-flex flex-column"
                       style={{
-                        border: "6px solid #D81B60", // ✅ garis pink
-                        borderRadius: "8px",
+                        border: "6px solid #D81B60",
+                        borderRadius: "10px",
+                        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "scale(1.05)"; // ✨ Hover scale
+                        e.currentTarget.style.boxShadow =
+                          "0 0 20px rgba(216, 27, 96, 0.6)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "scale(1)";
+                        e.currentTarget.style.boxShadow =
+                          "0 0 0 rgba(0,0,0,0)";
                       }}
                     >
                       <div
@@ -47,23 +65,21 @@ export default function CartModal({ cart, setCart }) {
                       >
                         <img
                           src={
-                            movie.Poster !== "N/A"
-                              ? movie.Poster
-                              : "/next.svg"
+                            movie.Poster !== "N/A" ? movie.Poster : "/next.svg"
                           }
                           alt={movie.Title}
                           className="w-100 h-100"
                           style={{
                             objectFit: "contain",
                             backgroundColor: "#111",
-                          }} // utuh, tidak crop
+                          }}
                         />
                       </div>
 
                       <div
                         className="card-body d-flex flex-column p-2"
                         style={{
-                          borderTop: "5px solid #D81B60", // ✅ garis pink di atas judul
+                          borderTop: "5px solid #D81B60",
                         }}
                       >
                         <h6
@@ -76,19 +92,32 @@ export default function CartModal({ cart, setCart }) {
                             overflow: "hidden",
                           }}
                         >
-                          {movie.Title} 
+                          {movie.Title}
                         </h6>
                         <small className="text-muted">{movie.Year}</small>
 
-                        <div className="mt-auto pt-2">
-                          {/* ✅ Button Hapus polos → hover jadi pink */}
+                        <div className="mt-auto pt-2 d-flex flex-column gap-2">
+                          {/* ✅ Button See Detail */}
                           <button
-                            className="btn btn-sm w-100"
+                            className="btn btn-sm fw-bold"
+                            style={{
+                              backgroundColor: "#D81B60",
+                              color: "white",
+                            }}
+                            data-bs-toggle="modal"
+                            data-bs-target="#movieDetail"
+                            onClick={() => onSeeDetail(movie)}
+                          >
+                            🎬 See Detail
+                          </button>
+
+                          {/* ✅ Button Hapus */}
+                          <button
+                            className="btn btn-sm fw-bold"
                             style={{
                               border: "2px solid #D81B60",
                               color: "#D81B60",
                               backgroundColor: "transparent",
-                              fontWeight: "bold",
                             }}
                             onMouseOver={(e) => {
                               e.currentTarget.style.backgroundColor = "#D81B60";
@@ -105,7 +134,7 @@ export default function CartModal({ cart, setCart }) {
                               )
                             }
                           >
-                            ✖ HAPUS
+                            🗑️ Hapus
                           </button>
                         </div>
                       </div>
@@ -117,45 +146,56 @@ export default function CartModal({ cart, setCart }) {
           </div>
 
           {/* Footer */}
-          <div className="modal-footer">
+          <div
+            className="modal-footer d-flex justify-content-between align-items-center"
+            style={{ borderTop: "3px solid #D81B60" }}
+          >
             {cart.length > 0 && (
+              <small className="fw-bold text-muted">
+                Total film: {cart.length} 🎬
+              </small>
+            )}
+
+            <div className="d-flex gap-2">
+              {cart.length > 0 && (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setCart([])}
+                  style={{
+                    backgroundColor: "#E91E63",
+                    color: "white",
+                    fontWeight: "bold",
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#fd3276ff")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#D81B60")
+                  }
+                >
+                  🗑️ Clear All
+                </button>
+              )}
               <button
                 type="button"
                 className="btn"
-                onClick={() => setCart([])}
+                data-bs-dismiss="modal"
                 style={{
-                  backgroundColor: "#E91E63", // ✅ merah solid
+                  backgroundColor: "#6c757d",
                   color: "white",
                   fontWeight: "bold",
                 }}
                 onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#fd3276ff")
+                  (e.currentTarget.style.backgroundColor = "#464646ff")
                 }
                 onMouseOut={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#D81B60")
+                  (e.currentTarget.style.backgroundColor = "#262425ff")
                 }
               >
-                🗑️ Clear All
+                Close
               </button>
-            )}
-            <button
-              type="button"
-              className="btn"
-              data-bs-dismiss="modal"
-              style={{
-                backgroundColor: "#6c757d", // ✅ abu-abu custom
-                color: "white",
-                fontWeight: "bold",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor = "#464646ff")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.backgroundColor = "#262425ff")
-              }
-            >
-              Close
-            </button>
+            </div>
           </div>
         </div>
       </div>

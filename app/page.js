@@ -13,7 +13,6 @@ export default function Home() {
   const [cart, setCart] = useState([]);
   const [animate, setAnimate] = useState(false);
   
-
   // animasi badge cart
   useEffect(() => {
     if (cart.length > 0) {
@@ -64,16 +63,13 @@ export default function Home() {
         setError(""); 
       } else {
         setMovies([]);
-        setError(data.Error || "Movie not found!"); // tampilkan error asli
+        setError(data.Error || "Movie not found!");
       }
     } catch (error) {
       console.error("Error fetching movies:", error);
       setMovies([]);
       setError("Error fetching movies. Please try again later.");
     }
-
-    // ❌ jangan dikosongkan, biar user tetap lihat inputnya
-    // setQuery("");
   };
 
   const handleDetail = async (imdbID) => {
@@ -125,10 +121,7 @@ export default function Home() {
           <a 
             className="navbar-brand fw-bold fs-2" 
             href="#"
-            style={{ color: "#fff" }}
-          >
-            MOVIE NEXT.JS
-          </a>
+            style={{ color: "#fff" }}>MOVIE NEXT.JS</a>
         
           {/* Tombol keranjang kanan */}
           <button
@@ -142,8 +135,7 @@ export default function Home() {
               background: "linear-gradient(135deg, #ffffffff, #ffffffff)", 
               border: "2px solid #fff",
               boxShadow: "0 4px 10px rgba(255, 255, 255, 1)",
-            }}
-          >
+            }}>
             <span className="fs-3 text-light">🛒</span>
             {cart.length > 0 && (
               <span
@@ -156,8 +148,7 @@ export default function Home() {
                   backgroundColor: "#E91E63", 
                   border: "2px solid #fff", 
                   boxShadow: "0 2px 5px rgba(0,0,0,0.4)",
-                }}
-              >
+                }}>
                 {cart.length}
               </span>
             )}
@@ -175,8 +166,7 @@ export default function Home() {
           <form
             onSubmit={handleSearch}
             className="d-flex mx-auto gap-3"
-            style={{ maxWidth: "1000px", width: "95%" }}
-          >
+            style={{ maxWidth: "1000px", width: "95%" }}>
 
             <input
               type="text"
@@ -192,8 +182,7 @@ export default function Home() {
                 borderRadius: "12px",
                 padding: "12px 16px",
                 fontSize: "1.05rem",
-              }}
-            />
+              }}/>
  
             <button 
               type="submit" 
@@ -253,14 +242,18 @@ export default function Home() {
       </div>
 
       {/* Modal Keranjang */}
-      <CartModal cart={cart} setCart={setCart} />
+      <CartModal 
+        cart={cart} 
+        setCart={setCart} 
+        onSeeDetail={(movie) => handleDetail(movie.imdbID)} // ✅ tambahan ini
+      />
 
       {/* Modal Detail */}
       <MovieDetailModal 
         movie={selectedMovie} 
         onAddToCart={addToCart}
       />
-
+      
       {/* Animasi Shake Badge */}
       <style>
       {`

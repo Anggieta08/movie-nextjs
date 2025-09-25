@@ -64,21 +64,21 @@ export default function MovieDetailModal({ movie, onAddToCart }) {
               {/* Footer: Close + Add to Cart */}
               <div className="modal-footer">
                 <button 
-  type="button" 
-  className="btn fw-bold px-3"
-  style={{
-    backgroundColor: "#383636ff",          // 🔥 warna abu gelap
-    color: "#fff",                    // teks putih
-    borderRadius: "8px",              // rounded
-  }}
-   onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#464646ff"} 
-   onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#262425ff"}
-  data-bs-dismiss="modal"
->
-  Close
-</button>
+                    type="button" 
+                    className="btn fw-bold px-3"
+                    style={{
+                    backgroundColor: "#383636ff",          // 🔥 warna abu gelap
+                    color: "#fff",                    // teks putih
+                    borderRadius: "8px",              // rounded
+                  }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#464646ff"} 
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#262425ff"}
+                    data-bs-dismiss="modal"
+                  > 
+                    Close   
+                  </button>
 
-        <button 
+                    <button 
                   type="button"
                   className="btn fw-bold px-4 d-flex align-items-center gap-2"
                   style={{
