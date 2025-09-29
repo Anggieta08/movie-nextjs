@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { Modal } from "bootstrap";
+
 export default function CartItemCard({ movie, onSeeDetail, onRemove }) {
   return (
     <div className="col-md-3 mb-3">
@@ -14,8 +16,7 @@ export default function CartItemCard({ movie, onSeeDetail, onRemove }) {
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.transform = "scale(1.05)";
-          e.currentTarget.style.boxShadow =
-            "0 0 20px rgba(216, 27, 96, 0.6)";
+          e.currentTarget.style.boxShadow = "0 0 20px rgba(216, 27, 96, 0.6)";
         }}
         onMouseOut={(e) => {
           e.currentTarget.style.transform = "scale(1)";
@@ -53,16 +54,28 @@ export default function CartItemCard({ movie, onSeeDetail, onRemove }) {
 
           {/* Tombol aksi */}
           <div className="mt-auto d-flex flex-column gap-2 pt-2">
+            {/* ✅ See Detail */}
             <button
               className="btn btn-sm fw-bold"
               style={{ backgroundColor: "#D81B60", color: "white" }}
-              data-bs-toggle="modal"
-              data-bs-target="#movieDetail"
-              onClick={() => onSeeDetail(movie.imdbID)}
+              onClick={() => {
+                // Tutup modal cart
+                const cartModal = Modal.getInstance(document.getElementById("cartModal"));
+                cartModal?.hide();
+
+                // Set data movie + flag fromCart ke true
+                onSeeDetail(movie.imdbID, { fromCart: true });
+
+                // Buka modal detail
+                const detailModalEl = document.getElementById("movieDetail");
+                const detailModal = new Modal(detailModalEl);
+                detailModal.show();
+              }}
             >
               🎬 See Detail
             </button>
 
+            {/* ✅ Hapus */}
             <button
               className="btn btn-sm fw-bold"
               style={{

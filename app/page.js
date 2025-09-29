@@ -56,8 +56,6 @@ export default function Home() {
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
       const data = await res.json();
-      console.log("API Response:", data); // debug response
-
       if (data.Response === "True") {
         setMovies(data.Search);
         setError(""); 
@@ -72,7 +70,8 @@ export default function Home() {
     }
   };
 
-  const handleDetail = async (imdbID) => {
+  // 🔥 handleDetail bisa tau asal (cart / list)
+  const handleDetail = async (imdbID, options = {}) => {
     try {
       const res = await fetch(
         `https://www.omdbapi.com/?apikey=65eb3943&i=${imdbID}` 
@@ -81,10 +80,11 @@ export default function Home() {
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
       const data = await res.json();
-      console.log("Detail Response:", data); // debug response
-
       if (data.Response === "True") {
-        setSelectedMovie(data);
+        setSelectedMovie({
+          ...data,
+          fromCart: options.fromCart || false, // ✅ simpan flag asal
+        });
       } else {
         setSelectedMovie(null);
         setError(data.Error || "Movie detail not found!");
@@ -234,7 +234,7 @@ export default function Home() {
               <MovieCard
                 key={`${m.imdbID}-${i}`}
                 movie={m}
-                onSeeDetail={handleDetail}
+                onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: false })} // ✅ dari list utama
               />
             ))
           }
@@ -245,14 +245,18 @@ export default function Home() {
       <CartModal 
         cart={cart} 
         setCart={setCart} 
-        onSeeDetail={(movie) => handleDetail(movie.imdbID)} // ✅ tambahan ini
+        onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: true })} // ✅ dari cart
       />
 
       {/* Modal Detail */}
       <MovieDetailModal 
-        movie={selectedMovie} 
-        onAddToCart={addToCart}
-      />
+  movie={selectedMovie} 
+  onAddToCart={addToCart}
+  onClose={() => setSelectedMovie(null)} 
+  fromCart={selectedMovie?.fromCart} // 🔥 kirim flag asal
+  isInCart={cart.some((c) => c.imdbID === selectedMovie?.imdbID)} // 🔥 cek apakah sudah ada di cart
+/>
+
       
       {/* Animasi Shake Badge */}
       <style>

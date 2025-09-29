@@ -1,27 +1,51 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-export default function MovieDetailModal({ movie, onAddToCart }) {
+import { useEffect } from "react";
+
+export default function MovieDetailModal({ 
+  movie, 
+  onAddToCart, 
+  onClose, 
+  fromCart, 
+  isInCart 
+}) {
+  useEffect(() => {
+    // Dynamic import Bootstrap JS hanya di client
+    import("bootstrap").then(({ Modal }) => {
+      const modalEl = document.getElementById("movieDetail");
+      if (modalEl) {
+        const modal = new Modal(modalEl);
+        modal.show();
+      }
+    });
+  }, []);
+
   return (
     <div
       className="modal fade"
       id="movieDetail"
       tabIndex="-1"
       aria-labelledby="movieDetailLabel"
-      aria-hidden="true">
-
+      aria-hidden="true"
+    >
       <div className="modal-dialog modal-lg">
-        <div 
+        <div
           className="modal-content"
           style={{
-            border: "8px solid #D81B60",   // 🔥 garis tebal di sekeliling modal
+            border: "8px solid #D81B60",
             borderRadius: "12px"
-          }}>
-
+          }}
+        >
           {movie ? (
             <>
+              {/* Header */}
               <div className="modal-header">
-                <h5 className="modal-title fw-bold" id="movieDetailLabel" style={{ color: "#E91E630" }}>
+                <h5
+                  className="modal-title fw-bold"
+                  id="movieDetailLabel"
+                  style={{ color: "#E91E63" }}
+                >
                   {movie.Title} ({movie.Year})
                 </h5>
                 <button
@@ -29,9 +53,11 @@ export default function MovieDetailModal({ movie, onAddToCart }) {
                   className="btn-close"
                   data-bs-dismiss="modal"
                   aria-label="Close"
+                  onClick={onClose}
                 ></button>
               </div>
 
+              {/* Body */}
               <div className="modal-body row">
                 <div className="col-md-4">
                   <img
@@ -61,40 +87,68 @@ export default function MovieDetailModal({ movie, onAddToCart }) {
                 </div>
               </div>
 
-              {/* Footer: Close + Add to Cart */}
+              {/* Footer */}
               <div className="modal-footer">
-                <button 
-                    type="button" 
+                {fromCart ? (
+                  <button
+                    type="button"
                     className="btn fw-bold px-3"
                     style={{
-                    backgroundColor: "#383636ff",          // 🔥 warna abu gelap
-                    color: "#fff",                    // teks putih
-                    borderRadius: "8px",              // rounded
-                  }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#464646ff"} 
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#262425ff"}
-                    data-bs-dismiss="modal"
-                  > 
-                    Close   
-                  </button>
+                      backgroundColor: "#383636",
+                      color: "#fff",
+                      borderRadius: "8px",
+                    }}
+                    onClick={() => {
+                      import("bootstrap").then(({ Modal }) => {
+                        const detailModal = Modal.getInstance(document.getElementById("movieDetail"));
+                        detailModal?.hide();
 
-                    <button 
-                  type="button"
-                  className="btn fw-bold px-4 d-flex align-items-center gap-2"
-                  style={{
-                    backgroundColor: "#FF4F81",
-                    color: "#1b0000ff", // 🔥 pakai teks hitam supaya 🛒 jelas
-                    border: "none",
-                    borderRadius: "8px",
-                    boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)"
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#fd3276ff"} 
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#D81B60"}
-                  onClick={() => onAddToCart(movie)}
-                  data-bs-dismiss="modal"
-                >
-                  🛒 <span style={{ color: "#ffffffff" }}>Add to Cart</span>
-                </button>
+                        const cartModalEl = document.getElementById("cartModal");
+                        const cartModal = new Modal(cartModalEl);
+                        cartModal.show();
+                      });
+                    }}
+                  >
+                    🔙 Back to Cart
+                  </button>
+                ) : (
+                  <>
+                    {isInCart ? (
+                      <button
+                        type="button"
+                        className="btn fw-bold px-4"
+                        style={{
+                          backgroundColor: "#6c757d",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "8px",
+                        }}
+                        onClick={onClose}
+                        data-bs-dismiss="modal"
+                      >
+                        🔙 Kembali
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn fw-bold px-4 d-flex align-items-center gap-2"
+                        style={{
+                          backgroundColor: "#FF4F81",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "8px",
+                          boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)"
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#fd3276"}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#D81B60"}
+                        onClick={() => onAddToCart(movie)}
+                        data-bs-dismiss="modal"
+                      >
+                        🛒 Add to Cart
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </>
           ) : (

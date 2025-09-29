@@ -36,7 +36,7 @@ export default function CartModal({ cart, setCart, onSeeDetail }) {
           {/* ✅ Grid 4 kolom; poster utuh */}
           <div className="modal-body">
             {cart.length === 0 ? (
-              <p className="text-center text-muted">Keranjang kosong 😢</p>
+              <p className="text-center text-muted">Keranjang Kosong</p>
             ) : (
               <div className="row row-cols-2 row-cols-md-4 g-3">
                 {cart.map((movie) => (
@@ -106,7 +106,9 @@ export default function CartModal({ cart, setCart, onSeeDetail }) {
                             }}
                             data-bs-toggle="modal"
                             data-bs-target="#movieDetail"
-                            onClick={() => onSeeDetail(movie)}
+                            onClick={() =>
+                              onSeeDetail(movie, { fromCart: true })
+                            }
                           >
                             🎬 See Detail
                           </button>
