@@ -1,28 +1,26 @@
-'use client'; 
+'use client';
 import { useState, useEffect } from "react";
 import MovieCard from "./components/MovieCard";
 import MovieDetailModal from "./components/MovieDetailModal";
-import CartModal from "./components/CartModal"; 
-import "./globals.css"; 
+import CartModal from "./components/CartModal";
+import "./globals.css";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
   const [cart, setCart] = useState([]);
   const [animate, setAnimate] = useState(false);
-  
-  // animasi badge cart
+
   useEffect(() => {
     if (cart.length > 0) {
       setAnimate(true);
-      const timeout = setTimeout(() => setAnimate(false), 600); 
+      const timeout = setTimeout(() => setAnimate(false), 600);
       return () => clearTimeout(timeout);
     }
   }, [cart]);
 
-  // Load cart dari localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
@@ -30,7 +28,6 @@ export default function Home() {
     }
   }, []);
 
-  // Simpan cart ke localStorage setiap berubah
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -48,7 +45,7 @@ export default function Home() {
       return;
     }
 
-    try { 
+    try {
       const res = await fetch(
         `https://www.omdbapi.com/?apikey=65eb3943&s=${encodeURIComponent(query)}`
       );
@@ -58,7 +55,7 @@ export default function Home() {
       const data = await res.json();
       if (data.Response === "True") {
         setMovies(data.Search);
-        setError(""); 
+        setError("");
       } else {
         setMovies([]);
         setError(data.Error || "Movie not found!");
@@ -70,11 +67,10 @@ export default function Home() {
     }
   };
 
-  // 🔥 handleDetail bisa tau asal (cart / list)
   const handleDetail = async (imdbID, options = {}) => {
     try {
       const res = await fetch(
-        `https://www.omdbapi.com/?apikey=65eb3943&i=${imdbID}` 
+        `https://www.omdbapi.com/?apikey=65eb3943&i=${imdbID}`
       );
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -83,7 +79,7 @@ export default function Home() {
       if (data.Response === "True") {
         setSelectedMovie({
           ...data,
-          fromCart: options.fromCart || false, // ✅ simpan flag asal
+          fromCart: options.fromCart || false,
         });
       } else {
         setSelectedMovie(null);
@@ -100,30 +96,30 @@ export default function Home() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #1B1B2F, #2C2C54, #432C52)", 
+        background: "linear-gradient(135deg, #1B1B2F, #2C2C54, #432C52)",
         color: "#fff"
       }}
     >
-      {/* Navbar */}
-      <nav 
+      <nav
         className="navbar navbar-expand-lg shadow-sm py-3"
         style={{
           background: "linear-gradient(90deg, #FF4F81, #D81B60, #AD1457)",
           border: "2px solid #AD1457",
-          borderRadius: "5px",           
+          borderRadius: "5px",
         }}
       >
-        <div 
+        <div
           className="container d-flex justify-content-between align-items-center"
-          style={{ maxWidth: "1200px" }}>
-
-          {/* Logo kiri */}
-          <a 
-            className="navbar-brand fw-bold fs-2" 
+          style={{ maxWidth: "1200px" }}
+        >
+          <a
+            className="navbar-brand fw-bold fs-2"
             href="#"
-            style={{ color: "#fff" }}>MOVIE NEXT.JS</a>
-        
-          {/* Tombol keranjang kanan */}
+            style={{ color: "#fff" }}
+          >
+            MOVIE NEXT.JS
+          </a>
+
           <button
             type="button"
             className="btn position-relative rounded-circle shadow-sm d-flex align-items-center justify-content-center"
@@ -132,23 +128,25 @@ export default function Home() {
             style={{
               width: "60px",
               height: "60px",
-              background: "linear-gradient(135deg, #ffffffff, #ffffffff)", 
+              background: "linear-gradient(135deg, #ffffff, #ffffff)",
               border: "2px solid #fff",
               boxShadow: "0 4px 10px rgba(255, 255, 255, 1)",
-            }}>
+            }}
+          >
             <span className="fs-3 text-light">🛒</span>
             {cart.length > 0 && (
               <span
                 className={`position-absolute badge rounded-pill ${animate ? "shake" : ""}`}
                 style={{
-                  top: "-5px",               
-                  right: "-12px",            
+                  top: "-5px",
+                  right: "-12px",
                   fontSize: "0.9rem",
                   padding: "0.3em 0.55em",
-                  backgroundColor: "#E91E63", 
-                  border: "2px solid #fff", 
+                  backgroundColor: "#E91E63",
+                  border: "2px solid #fff",
                   boxShadow: "0 2px 5px rgba(0,0,0,0.4)",
-                }}>
+                }}
+              >
                 {cart.length}
               </span>
             )}
@@ -156,7 +154,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Bagian Search */}
       <div className="container my-5">
         <div className="text-center mb-4">
           <h2 className="fw-bold fs-2 d-inline-flex align-items-center mb-3" style={{ color: "#fff" }}>
@@ -166,8 +163,8 @@ export default function Home() {
           <form
             onSubmit={handleSearch}
             className="d-flex mx-auto gap-3"
-            style={{ maxWidth: "1000px", width: "95%" }}>
-
+            style={{ maxWidth: "1000px", width: "95%" }}
+          >
             <input
               type="text"
               className="form-control"
@@ -178,14 +175,15 @@ export default function Home() {
                 backgroundColor: "#ffffff",
                 color: "#000000",
                 border: "3px solid #E91E63",
-                boxShadow: "0 4px 10px rgba(246, 137, 168, 0.8)", 
+                boxShadow: "0 4px 10px rgba(246, 137, 168, 0.8)",
                 borderRadius: "12px",
                 padding: "12px 16px",
                 fontSize: "1.05rem",
-              }}/>
- 
-            <button 
-              type="submit" 
+              }}
+            />
+
+            <button
+              type="submit"
               className="btn px-4 fw-bold"
               style={{
                 backgroundColor: "#E91E63",
@@ -196,19 +194,18 @@ export default function Home() {
                 padding: "12px 22px",
                 fontSize: "1.05rem",
               }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#FF4F81"}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#E91E63"}
+              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#FF4F81")}
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#E91E63")}
             >
               Search
             </button>
           </form>
         </div>
 
-        {/* Garis pemisah */}
         {(movies.length > 0 || error) && (
           <hr
             style={{
-              border: "5px solid #ffffffff", 
+              border: "5px solid #ffffff",
               borderRadius: "5px",
               width: "100%",
               margin: "50px 0"
@@ -216,7 +213,6 @@ export default function Home() {
           />
         )}
 
-        {/* Error */}
         {error && (
           <div
             className="alert alert-danger text-center fs-5 fw-bold mx-auto"
@@ -227,51 +223,46 @@ export default function Home() {
           </div>
         )}
 
-        {/* Movie Cards */}
         <div className="row">
           {movies.length > 0 &&
             movies.map((m, i) => (
               <MovieCard
                 key={`${m.imdbID}-${i}`}
                 movie={m}
-                onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: false })} // ✅ dari list utama
+                onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: false })}
               />
             ))
           }
         </div>
       </div>
 
-      {/* Modal Keranjang */}
-      <CartModal 
-        cart={cart} 
-        setCart={setCart} 
-        onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: true })} // ✅ dari cart
+      <CartModal
+        cart={cart}
+        setCart={setCart}
+        onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: true })}
       />
 
-      {/* Modal Detail */}
-      <MovieDetailModal 
-  movie={selectedMovie} 
-  onAddToCart={addToCart}
-  onClose={() => setSelectedMovie(null)} 
-  fromCart={selectedMovie?.fromCart} // 🔥 kirim flag asal
-  isInCart={cart.some((c) => c.imdbID === selectedMovie?.imdbID)} // 🔥 cek apakah sudah ada di cart
-/>
+      <MovieDetailModal
+        movie={selectedMovie}
+        onAddToCart={addToCart}
+        onClose={() => setSelectedMovie(null)}
+        fromCart={selectedMovie?.fromCart}
+        isInCart={cart.some((c) => c.imdbID === selectedMovie?.imdbID)}
+      />
 
-      
-      {/* Animasi Shake Badge */}
       <style>
-      {`
-        @keyframes shake {
-          0%, 100% { transform: translate(0, 0); }
-          20% { transform: translateX(-2px); }
-          40% { transform: translateX(2px); }
-          60% { transform: translateX(-2px); }
-          80% { transform: translateX(2px); }
-        }
-        .shake {
-          animation: shake 0.1s;
-        }
-      `}
+        {`
+          @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+          }
+          .shake {
+            animation: shake 0.1s;
+          }
+        `}
       </style>
     </div>
   );

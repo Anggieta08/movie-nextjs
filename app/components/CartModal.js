@@ -154,7 +154,7 @@ export default function CartModal({ cart, setCart, onSeeDetail }) {
           >
             {cart.length > 0 && (
               <small className="fw-bold text-muted">
-                Total film: {cart.length} 🎬
+               🎬 TOTAL FILM : {cart.length} 
               </small>
             )}
 
@@ -170,7 +170,8 @@ export default function CartModal({ cart, setCart, onSeeDetail }) {
                     fontWeight: "bold",
                   }}
                   onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor = "#fd3276ff")
+                    (e.currentTarget.style.backgroundColor =
+                      "rgba(253, 50, 118, 1)") // #fd3276ff
                   }
                   onMouseOut={(e) =>
                     (e.currentTarget.style.backgroundColor = "#D81B60")
@@ -189,10 +190,12 @@ export default function CartModal({ cart, setCart, onSeeDetail }) {
                   fontWeight: "bold",
                 }}
                 onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#464646ff")
+                  (e.currentTarget.style.backgroundColor =
+                    "rgba(70, 70, 70, 1)") // #464646ff
                 }
                 onMouseOut={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#262425ff")
+                  (e.currentTarget.style.backgroundColor =
+                    "rgba(38, 36, 37, 1)") // #262425ff
                 }
               >
                 Close
