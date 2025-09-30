@@ -12,41 +12,25 @@ export default function MovieCard({ movie, onSeeDetail }) {
           border: "6px solid #D81B60",
           borderRadius: "12px",
           overflow: "hidden",
-        }}>
-        
-        {/* Poster */}
-        <div
-          style={{
-          width: "100%",
-          height: "auto",
-          backgroundColor: "#000", // biar rapi kalau ada poster kecil
-        }}>
-
-        <img
-          src={movie.Poster !== "N/A" ? movie.Poster : "/next.svg"}
-          alt={movie.Title}
+        }}
+      >
+        <div style={{ width: "100%", height: "auto", backgroundColor: "#000" }}>
+          <img
+            src={movie.Poster !== "N/A" ? movie.Poster : "/next.svg"}
+            alt={movie.Title}
             className="card-img-top"
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "contain", // 🔥 poster tampil full utuh
-            }}/>
+              objectFit: "contain",
+            }}
+          />
         </div>
 
-        {/* Garis pemisah */}
-        <div
-          style={{
-          height: "6px",
-          backgroundColor: "#D81B60", // warna solid, bisa diganti sesuai kebutuhan
-          margin: "0",
-          }}>
-        </div>
+        <div style={{ height: "6px", backgroundColor: "#D81B60", margin: "0" }} />
 
-        {/* Body */}
         <div className="card-body d-flex flex-column text-center">
-          <h5 
-            className="card-title fw-bold mb-2"
-            style={{ color: "#D81B60" }}>
+          <h5 className="card-title fw-bold mb-2" style={{ color: "#D81B60" }}>
             {movie.Title}
           </h5>
           <p className="card-text text-muted">{movie.Year}</p>
@@ -60,15 +44,14 @@ export default function MovieCard({ movie, onSeeDetail }) {
               borderRadius: "8px",
               boxShadow: "0 4px 10px rgba(255, 255, 255, 0.5)",
             }}
-              data-bs-toggle="modal"
-              data-bs-target="#movieDetail"
-              onClick={() => onSeeDetail(movie.imdbID)}
-              onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = "#FF4F81")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = "#E91E63")
-            }>See Detail</button>
+            data-bs-toggle="modal"
+            data-bs-target="#movieDetail"
+            onClick={() => onSeeDetail(movie)}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#FF4F81")}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#D81B60")}
+          >
+            See Detail
+          </button>
         </div>
       </div>
     </div>
