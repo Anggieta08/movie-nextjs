@@ -3,24 +3,20 @@
 
 import { useEffect } from "react";
 
-export default function MovieDetailModal({ 
-  movie, 
-  onAddToCart, 
-  onClose, 
-  fromCart, 
-  isInCart 
+export default function MovieDetailModal({
+  movie,
+  onAddToCart,
+  onClose,
+  fromCart,
+  isInCart,
 }) {
   useEffect(() => {
     if (!movie) return;
-
-    if (typeof window !== "undefined") {
-      import("bootstrap").then(({ Modal }) => {
-        const modalEl = document.getElementById("movieDetail");
-        if (modalEl) {
-          const modal = Modal.getOrCreateInstance(modalEl);
-          modal.show();
-        }
-      });
+    // biarkan bootstrap handle modal show, jangan pakai Modal.getOrCreateInstance
+    const modalEl = document.getElementById("movieDetail");
+    if (modalEl) {
+      const modal = new window.bootstrap.Modal(modalEl);
+      modal.show();
     }
   }, [movie]);
 
@@ -35,14 +31,10 @@ export default function MovieDetailModal({
       <div className="modal-dialog modal-lg">
         <div
           className="modal-content"
-          style={{
-            border: "8px solid #D81B60",
-            borderRadius: "12px"
-          }}
+          style={{ border: "8px solid #D81B60", borderRadius: "12px" }}
         >
           {movie ? (
             <>
-              {/* Header */}
               <div className="modal-header">
                 <h5
                   className="modal-title fw-bold"
@@ -60,7 +52,6 @@ export default function MovieDetailModal({
                 ></button>
               </div>
 
-              {/* Body */}
               <div className="modal-body row">
                 <div className="col-md-4">
                   <img
@@ -90,7 +81,6 @@ export default function MovieDetailModal({
                 </div>
               </div>
 
-              {/* Footer */}
               <div className="modal-footer">
                 {fromCart ? (
                   <button
@@ -101,21 +91,9 @@ export default function MovieDetailModal({
                       color: "#fff",
                       borderRadius: "8px",
                     }}
-                    onClick={() => {
-                      import("bootstrap").then(({ Modal }) => {
-                        const detailModal = Modal.getInstance(
-                          document.getElementById("movieDetail")
-                        );
-                        detailModal?.hide();
-
-                        // kasih delay 300ms biar transisi modal selesai dulu
-                        setTimeout(() => {
-                          const cartModalEl = document.getElementById("cartModal");
-                          const cartModal = Modal.getOrCreateInstance(cartModalEl);
-                          cartModal.show();
-                        }, 300);
-                      });
-                    }}
+                    data-bs-target="#cartModal"
+                    data-bs-toggle="modal"
+                    data-bs-dismiss="modal"
                   >
                     🔙 Back to Cart
                   </button>
@@ -146,21 +124,14 @@ export default function MovieDetailModal({
                             color: "#fff",
                             border: "none",
                             borderRadius: "8px",
-                            boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)"
+                            boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)",
                           }}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#fd3276")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#FF4F81")
-                          }
                           onClick={() => onAddToCart(movie)}
                           data-bs-dismiss="modal"
                         >
                           🛒 Add to Cart
                         </button>
 
-                        {/* Tombol Close baru */}
                         <button
                           type="button"
                           className="btn fw-bold px-4 ms-2"
