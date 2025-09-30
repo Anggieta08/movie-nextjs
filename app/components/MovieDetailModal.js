@@ -11,15 +11,18 @@ export default function MovieDetailModal({
   isInCart 
 }) {
   useEffect(() => {
-    // Dynamic import Bootstrap JS hanya di client
-    import("bootstrap").then(({ Modal }) => {
-      const modalEl = document.getElementById("movieDetail");
-      if (modalEl) {
-        const modal = new Modal(modalEl);
-        modal.show();
-      }
-    });
-  }, []);
+    if (!movie) return;
+
+    if (typeof window !== "undefined") {
+      import("bootstrap").then(({ Modal }) => {
+        const modalEl = document.getElementById("movieDetail");
+        if (modalEl) {
+          const modal = Modal.getOrCreateInstance(modalEl);
+          modal.show();
+        }
+      });
+    }
+  }, [movie]);
 
   return (
     <div
@@ -68,19 +71,19 @@ export default function MovieDetailModal({
                 </div>
                 <div className="col-md-8">
                   <ul className="list-group mb-3">
-                    <li className="list-group-item" style={{borderColor: "#E91E63"}}>
+                    <li className="list-group-item" style={{ borderColor: "#E91E63" }}>
                       <strong>Genre:</strong> {movie.Genre}
                     </li>
-                    <li className="list-group-item" style={{borderColor: "#E91E63"}}>
+                    <li className="list-group-item" style={{ borderColor: "#E91E63" }}>
                       <strong>Director:</strong> {movie.Director}
                     </li>
-                    <li className="list-group-item" style={{borderColor: "#E91E63"}}>
+                    <li className="list-group-item" style={{ borderColor: "#E91E63" }}>
                       <strong>Actors:</strong> {movie.Actors}
                     </li>
-                    <li className="list-group-item" style={{borderColor: "#E91E63"}}>
+                    <li className="list-group-item" style={{ borderColor: "#E91E63" }}>
                       <strong>Released:</strong> {movie.Released}
                     </li>
-                    <li className="list-group-item" style={{borderColor: "#D81B60"}}>
+                    <li className="list-group-item" style={{ borderColor: "#D81B60" }}>
                       <strong>Plot:</strong> {movie.Plot}
                     </li>
                   </ul>
@@ -100,12 +103,17 @@ export default function MovieDetailModal({
                     }}
                     onClick={() => {
                       import("bootstrap").then(({ Modal }) => {
-                        const detailModal = Modal.getInstance(document.getElementById("movieDetail"));
+                        const detailModal = Modal.getInstance(
+                          document.getElementById("movieDetail")
+                        );
                         detailModal?.hide();
 
-                        const cartModalEl = document.getElementById("cartModal");
-                        const cartModal = new Modal(cartModalEl);
-                        cartModal.show();
+                        // kasih delay 300ms biar transisi modal selesai dulu
+                        setTimeout(() => {
+                          const cartModalEl = document.getElementById("cartModal");
+                          const cartModal = Modal.getOrCreateInstance(cartModalEl);
+                          cartModal.show();
+                        }, 300);
                       });
                     }}
                   >
@@ -129,23 +137,44 @@ export default function MovieDetailModal({
                         🔙 Kembali
                       </button>
                     ) : (
-                      <button
-                        type="button"
-                        className="btn fw-bold px-4 d-flex align-items-center gap-2"
-                        style={{
-                          backgroundColor: "#FF4F81",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: "8px",
-                          boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)"
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#fd3276"}
-                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#D81B60"}
-                        onClick={() => onAddToCart(movie)}
-                        data-bs-dismiss="modal"
-                      >
-                        🛒 Add to Cart
-                      </button>
+                      <>
+                        <button
+                          type="button"
+                          className="btn fw-bold px-4 d-flex align-items-center gap-2"
+                          style={{
+                            backgroundColor: "#FF4F81",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            boxShadow: "0 3px 6px rgba(0, 0, 0, 0.3)"
+                          }}
+                          onMouseOver={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#fd3276")
+                          }
+                          onMouseOut={(e) =>
+                            (e.currentTarget.style.backgroundColor = "#FF4F81")
+                          }
+                          onClick={() => onAddToCart(movie)}
+                          data-bs-dismiss="modal"
+                        >
+                          🛒 Add to Cart
+                        </button>
+
+                        {/* Tombol Close baru */}
+                        <button
+                          type="button"
+                          className="btn fw-bold px-4 ms-2"
+                          style={{
+                            backgroundColor: "#6c757d",
+                            color: "#fff",
+                            borderRadius: "8px",
+                          }}
+                          data-bs-dismiss="modal"
+                          onClick={onClose}
+                        >
+                          ✖ Close
+                        </button>
+                      </>
                     )}
                   </>
                 )}
