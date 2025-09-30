@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Modal } from "bootstrap";
-
 export default function CartItemCard({ movie, onSeeDetail, onRemove }) {
   return (
     <div className="col-md-3 mb-3">
@@ -23,7 +21,6 @@ export default function CartItemCard({ movie, onSeeDetail, onRemove }) {
           e.currentTarget.style.boxShadow = "0 0 0 rgba(0,0,0,0)";
         }}
       >
-        {/* Poster */}
         <div style={{ backgroundColor: "#000" }}>
           <img
             src={movie.Poster !== "N/A" ? movie.Poster : "/next.svg"}
@@ -33,49 +30,36 @@ export default function CartItemCard({ movie, onSeeDetail, onRemove }) {
           />
         </div>
 
-        {/* Body */}
-        <div
-          className="card-body d-flex flex-column text-center p-2"
-          style={{ borderTop: "4px solid #D81B60" }}
-        >
-          <h6
-            className="fw-bold mb-1"
-            style={{
-              color: "#D81B60",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
+        <div className="card-body d-flex flex-column text-center p-2" style={{ borderTop: "4px solid #D81B60" }}>
+          <h6 className="fw-bold mb-1" style={{ color: "#D81B60", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {movie.Title}
           </h6>
           <small className="text-muted">{movie.Year}</small>
 
-          {/* Tombol aksi */}
           <div className="mt-auto d-flex flex-column gap-2 pt-2">
-            {/* ✅ See Detail */}
             <button
               className="btn btn-sm fw-bold"
               style={{ backgroundColor: "#D81B60", color: "white" }}
               onClick={() => {
-                // Tutup modal cart
-                const cartModal = Modal.getInstance(document.getElementById("cartModal"));
-                cartModal?.hide();
+                import("bootstrap").then(({ Modal }) => {
+                  const cartModalEl = document.getElementById("cartModal");
+                  const cartModal = cartModalEl ? Modal.getInstance(cartModalEl) : null;
+                  cartModal?.hide();
 
-                // Set data movie + flag fromCart ke true
-                onSeeDetail(movie.imdbID, { fromCart: true });
+                  // panggil handler dari parent untuk set selectedMovie
+                  onSeeDetail(movie);
 
-                // Buka modal detail
-                const detailModalEl = document.getElementById("movieDetail");
-                const detailModal = new Modal(detailModalEl);
-                detailModal.show();
+                  const detailModalEl = document.getElementById("movieDetail");
+                  if (detailModalEl) {
+                    const detailModal = Modal.getOrCreateInstance(detailModalEl);
+                    detailModal.show();
+                  }
+                });
               }}
             >
               🎬 See Detail
             </button>
 
-            {/* ✅ Hapus */}
             <button
               className="btn btn-sm fw-bold"
               style={{
