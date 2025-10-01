@@ -1,5 +1,9 @@
-'use client';
+"use client";
 import { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css"; 
+// ❌ hapus import langsung JS bootstrap
+// import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 import MovieCard from "./components/MovieCard";
 import MovieDetailModal from "./components/MovieDetailModal";
 import CartModal from "./components/CartModal";
@@ -12,6 +16,11 @@ export default function Home() {
   const [error, setError] = useState("");
   const [cart, setCart] = useState([]);
   const [animate, setAnimate] = useState(false);
+
+  // ✅ load bootstrap JS hanya di client
+  useEffect(() => {
+    import("bootstrap/dist/js/bootstrap.bundle.min.js");
+  }, []);
 
   useEffect(() => {
     if (cart.length > 0) {
@@ -97,7 +106,7 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background: "linear-gradient(135deg, #1B1B2F, #2C2C54, #432C52)",
-        color: "#fff"
+        color: "#fff",
       }}
     >
       <nav
@@ -136,7 +145,9 @@ export default function Home() {
             <span className="fs-3 text-light">🛒</span>
             {cart.length > 0 && (
               <span
-                className={`position-absolute badge rounded-pill ${animate ? "shake" : ""}`}
+                className={`position-absolute badge rounded-pill ${
+                  animate ? "shake" : ""
+                }`}
                 style={{
                   top: "-5px",
                   right: "-12px",
@@ -156,8 +167,14 @@ export default function Home() {
 
       <div className="container my-5">
         <div className="text-center mb-4">
-          <h2 className="fw-bold fs-2 d-inline-flex align-items-center mb-3" style={{ color: "#fff" }}>
-            <span role="img" aria-label="clapper" className="me-2">🎬</span>Search For Movie
+          <h2
+            className="fw-bold fs-2 d-inline-flex align-items-center mb-3"
+            style={{ color: "#fff" }}
+          >
+            <span role="img" aria-label="clapper" className="me-2">
+              🎬
+            </span>
+            Search For Movie
           </h2>
 
           <form
@@ -194,8 +211,12 @@ export default function Home() {
                 padding: "12px 22px",
                 fontSize: "1.05rem",
               }}
-              onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#FF4F81")}
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#E91E63")}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.backgroundColor = "#fa4474ff")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.backgroundColor = "#E91E63")
+              }
             >
               Search
             </button>
@@ -208,7 +229,7 @@ export default function Home() {
               border: "5px solid #ffffff",
               borderRadius: "5px",
               width: "100%",
-              margin: "50px 0"
+              margin: "50px 0",
             }}
           />
         )}
@@ -229,10 +250,11 @@ export default function Home() {
               <MovieCard
                 key={`${m.imdbID}-${i}`}
                 movie={m}
-                onSeeDetail={(movie) => handleDetail(movie.imdbID, { fromCart: false })}
+                onSeeDetail={(movie) =>
+                  handleDetail(movie.imdbID, { fromCart: false })
+                }
               />
-            ))
-          }
+            ))}
         </div>
       </div>
 
@@ -250,20 +272,19 @@ export default function Home() {
         isInCart={cart.some((c) => c.imdbID === selectedMovie?.imdbID)}
       />
 
-      <style>
-        {`
-          @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translateX(-2px); }
-            40% { transform: translateX(2px); }
-            60% { transform: translateX(-2px); }
-            80% { transform: translateX(2px); }
-          }
-          .shake {
-            animation: shake 0.1s;
-          }
-        `}
-      </style>
+      {/* ✅ pakai style jsx biar tidak parsing error */}
+      <style jsx>{`
+        @keyframes shake {
+          0%, 100% { transform: translate(0, 0); }
+          20% { transform: translateX(-2px); }
+          40% { transform: translateX(2px); }
+          60% { transform: translateX(-2px); }
+          80% { transform: translateX(2px); }
+        }
+        .shake {
+          animation: shake 0.1s;
+        }
+      `}</style>
     </div>
   );
 }
